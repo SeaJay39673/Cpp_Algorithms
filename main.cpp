@@ -74,6 +74,7 @@ auto getTime()
 }
 
 unsigned long long (*(functions[5]))(int, int) = {factorial, loopFact, tailFact, memoFact, tailMemoFact};
+char *names[5] = {"factorial", "loop factorial", "tail recursive factorial", "memoized factorial", "tail recursive and memoized factorial"};
 
 void testFactorials()
 {
@@ -83,27 +84,33 @@ void testFactorials()
     std::vector<std::chrono::duration<double, std::milli>> times;
     auto start = getTime();
     std::chrono::duration<double, std::milli> durationSum = start - start;
-    int target = 0;
-    unsigned long long val;
-    for (int i = 0; i < 5; i++)
+    int trials = 1000;
+    for (int k = 0; k < 4; k++)
     {
-        factCache.empty();
-        factCache.push_back(1);
-        int trials = 100;
-        for (int j = 0; j < trials; j++)
+        times.clear();
+        int target = k * 3;
+        printf("TRIALS: %i\nTARGET:%i\n", trials, target);
+        unsigned long long val;
+        for (int i = 0; i < 5; i++)
         {
-            auto t1 = getTime();
-            val = functions[i](5, 1);
-            auto t2 = getTime();
-            std::chrono::duration<double, std::milli> ms_double = t2 - t1;
-            durationSum += ms_double;
+            factCache.empty();
+            factCache.push_back(1);
+            for (int j = 0; j < trials; j++)
+            {
+                auto t1 = getTime();
+                val = functions[i](target, 1);
+                auto t2 = getTime();
+                std::chrono::duration<double, std::milli> ms_double = t2 - t1;
+                durationSum += ms_double;
+            }
+            times.push_back(durationSum / trials);
+            durationSum -= durationSum;
         }
-        times.push_back(durationSum / trials);
-        durationSum -= durationSum;
-    }
-    for (int i = 0; i < times.size(); i++)
-    {
-        printf("Duration Sum for function %i: %f\n", i, times[i]);
+        for (int i = 0; i < times.size(); i++)
+        {
+            printf("Average Time for: %50s: %f\n", names[i], times[i]);
+        }
+        printf("\n");
     }
 }
 
