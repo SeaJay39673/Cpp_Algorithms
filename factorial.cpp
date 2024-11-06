@@ -10,6 +10,7 @@
 #include "helpers.cpp"
 
 std::vector<unsigned long long> factCacheArray[2];
+
 unsigned long long factorial(int n)
 {
     return n <= 0 ? 1 : factorial(n - 1) * n;
@@ -61,9 +62,12 @@ unsigned long long tailMemoFact(int n)
 unsigned long long (*(FactFuncs[5]))(int) = {factorial, loopFact, tailFact, memoFact, tailMemoFact};
 std::string FactNames[5] = {"factorial", "loop factorial", "tail recursive factorial", "memoized factorial", "tail recursive and memoized factorial"};
 
-void getFactVariables(std::string &type, int &size, std::string *(&names), unsigned long long((**(&functions))(int)))
+void getFactVariables(std::string &type, int &max, int &size, std::string *(&names), unsigned long long((**(&functions))(int)))
 {
+    factCacheArray[0].push_back(1);
+    factCacheArray[1].push_back(1);
     type = "FACTORIAL";
+    max = 10;
     size = 5;
     names = FactNames;
     functions = FactFuncs;
